@@ -3,16 +3,22 @@ import classes from './Input.css';
 
 const input = (props) => {
   let inputElement = null;
-  console.log(props);
+  // console.log(props);
+  const inputClasses = [classes.InputElement];
+
+  if (props.invalid) {
+    inputClasses.push(classes.Invalid);
+  }
+
   switch (props.elementType) {
     case 'input':
-      inputElement = <input className={classes.InputElement} {...props.elementConfig} value={props.value} onChange={props.changed} />;
+      inputElement = <input className={inputClasses.join(' ')} {...props.elementConfig} value={props.value} onChange={props.changed} />;
       break;
     case 'textarea':
-      inputElement = <textarea className={classes.InputElement} {...props.elementConfig} value={props.value} onChange={props.changed} />;
+      inputElement = <textarea className={inputClasses.join(' ')} {...props.elementConfig} value={props.value} onChange={props.changed} />;
       break;
     case 'select':
-      console.log('[input.js]' + props.elementConfig);
+      // console.log('[input.js]' + props.elementConfig);
       let options = props.elementConfig.options.map((o) => {
         return (
           <option value={o.value} key={o.value}>
@@ -30,7 +36,7 @@ const input = (props) => {
       ); //<select className={classes.SelectElement}>{options}</select>;
       break;
     default:
-      inputElement = <input className={classes.InputElement} {...props.elementConfig} value={props.value} onChange={props.changed} />;
+      inputElement = <input className={inputClasses.join(' ')} {...props.elementConfig} value={props.value} onChange={props.changed} />;
       break;
   }
 

@@ -11,11 +11,11 @@ class ContactData extends Component {
     super(props);
     this.state = {
       orderForm: {
-        name: this.getInputStateFormat('input', 'text', 'Your name', ''),
-        street: this.getInputStateFormat('input', 'text', 'Your street', ''),
-        zipCode: this.getInputStateFormat('input', 'text', 'Your ZipCode', ''),
-        country: this.getInputStateFormat('input', 'text', 'Your Country', ''),
-        email: this.getInputStateFormat('input', 'email', 'Your email', ''),
+        name: this.getInputStateFormat('input', 'text', 'Your name', '', { required: true }),
+        street: this.getInputStateFormat('input', 'text', 'Your street', '', { required: true }),
+        zipCode: this.getInputStateFormat('input', 'text', 'Your ZipCode', '', { required: true, minLength: 2, maxLength: 5 }),
+        country: this.getInputStateFormat('input', 'text', 'Your Country', '', { required: true }),
+        email: this.getInputStateFormat('input', 'email', 'Your email', '', { required: true, email: true }),
         deliveryMethod: {
           elementtype: 'select',
           elementConfig: {
@@ -24,21 +24,17 @@ class ContactData extends Component {
               { value: 'cheapest', displayValue: 'Cheapest' },
             ],
           },
+          value: 'fastest',
+          validation: null,
+          valid: true,
         },
       },
+      formIsValid: true,
       loading: false,
     };
   }
 
-  getInputStateFormat = (inputType, configType, placeholder, value) => {
-    console.log({
-      elementtype: inputType,
-      elementConfig: {
-        type: configType,
-        placeholder: placeholder,
-      },
-      value: value,
-    });
+  getInputStateFormat = (inputType, configType, placeholder, value, rules) => {
     return {
       elementtype: inputType,
       elementConfig: {
@@ -46,6 +42,9 @@ class ContactData extends Component {
         placeholder: placeholder,
       },
       value: value,
+      validation: rules,
+      valid: false,
+      touched: false,
     };
   };
 
@@ -88,10 +87,43 @@ class ContactData extends Component {
       ...updatedOrderForm[id],
     };
     updatedFormElement.value = event.target.value;
+    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
+
+    updatedFormElement.touched = true;
+
+    let formIsValid = true;
+    for (let inputIdentifier in updatedOrderForm) {
+      formIsValid = updatedOrderForm[inputIdentifier].valid && formIsValid;
+    }
+
     updatedOrderForm[id] = updatedFormElement;
     this.setState({
       orderForm: updatedOrderForm,
+      formIsValid: formIsValid,
     });
+  };
+
+  checkValidity = (value, rules) => {
+    let isValid = true;
+
+    if (rules.required) {
+      isValid = value.trim() !== '' && isValid;
+    }
+
+    if (rules.minLength) {
+      isValid = value.length >= rules.minLength && isValid;
+    }
+
+    if (rules.maxLength) {
+      isValid = value.length <= rules.maxLength && isValid;
+    }
+
+    if (rules.email) {
+      let ruleEmail = /\S+@\S+\.\S+/;
+      isValid = ruleEmail.test(value) && isValid;
+    }
+
+    return isValid;
   };
 
   render() {
@@ -102,7 +134,7 @@ class ContactData extends Component {
         config: this.state.orderForm[key],
       });
     }
-    console.log(formElementsArray);
+    // console.log(formElementsArray);
     const formElements = formElementsArray.map((e) => {
       return (
         <Input
@@ -112,6 +144,7 @@ class ContactData extends Component {
           elementConfig={e.config.elementConfig}
           value={e.config.value}
           changed={(event) => this.inputChangedHandler(event, e.id)}
+          invalid={e.config.touched && !e.config.valid}
         />
       );
     });
@@ -123,7 +156,9 @@ class ContactData extends Component {
         <Input inputtype='input' type='text' name='email' placeholder='Your mail' />
         <Input inputtype='input' type='text' name='street' placeholder='Street' />
         <Input inputtype='input' type='text' name='postal' placeholder='Postal Code' /> */}
-        <Button btnType='Success'>Order</Button>
+        <Button btnType='Success' disabled={!this.state.formIsValid}>
+          Order
+        </Button>
       </form>
     );
     if (this.state.loading) {
