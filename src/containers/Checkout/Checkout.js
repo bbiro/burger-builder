@@ -19,7 +19,7 @@ class Checkout extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props.location.search);
+    // console.log(this.props.location.search);
     const query = new URLSearchParams(this.props.location.search);
     const ingredients = {};
     let price = 0;
@@ -30,7 +30,7 @@ class Checkout extends Component {
         ingredients[param[0]] = +param[1];
       }
     }
-    console.log(ingredients);
+    // console.log(ingredients);
     this.setState({
       ingredients: ingredients,
       price: price,
@@ -46,7 +46,7 @@ class Checkout extends Component {
   };
 
   render() {
-    console.log(this.state.ingredients);
+    // console.log(this.state.ingredients);
     return (
       <div>
         <CheckoutSummary
