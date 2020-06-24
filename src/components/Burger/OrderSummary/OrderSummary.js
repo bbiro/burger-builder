@@ -3,6 +3,9 @@ import Aux from '../../../hoc/Aux/Aux';
 import Button from '../../UI/Button/Button';
 
 const orderSummary = (props) => {
+  if (!props.ingredients) {
+    return <h2>No Ingredients</h2>;
+  }
   const ingredientSummary = Object.keys(props.ingredients).map((igKey) => {
     return (
       <li key={igKey}>
