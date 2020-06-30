@@ -21,6 +21,13 @@ class Auth extends Component {
     };
   }
 
+  componentDidMount() {
+    if (!this.props.buildingBurger && this.props.authRedirectPath !== '/') {
+      console.log('[Auth.js] - componentDidMount - redirect to root');
+      this.props.onSetAuthRedirectPath();
+    }
+  }
+
   getInputStateFormat = (inputType, configType, placeholder, value, rules) => {
     return {
       elementtype: inputType,
@@ -115,8 +122,30 @@ class Auth extends Component {
       errorMessage = <p>{this.props.error.message}</p>;
     }
 
-    return !this.props.isAuthenticated ? (
+    let authRedirect = null;
+    if (this.props.isAuthenticated) {
+      authRedirect = <Redirect to={this.props.authRedirectPath} />;
+    }
+
+    // return !this.props.isAuthenticated ? (
+    //   <div className={classes.Auth}>
+    //     {authRedirect}
+    //     {errorMessage}
+    //     <form onSubmit={this.submitHandler}>
+    //       {form}
+    //       <Button btnType='Success'>Submit </Button>
+    //     </form>
+    //     <Button btnType='Danger' clicked={this.switchAuthModeHandler}>
+    //       Switch to {this.state.isSignUp ? 'Sign in' : 'Sign up'}
+    //     </Button>
+    //   </div>
+    // ) : (
+    //   <Redirect to='/' />
+    // );
+
+    return (
       <div className={classes.Auth}>
+        {authRedirect}
         {errorMessage}
         <form onSubmit={this.submitHandler}>
           {form}
@@ -126,8 +155,6 @@ class Auth extends Component {
           Switch to {this.state.isSignUp ? 'Sign in' : 'Sign up'}
         </Button>
       </div>
-    ) : (
-      <Redirect to='/' />
     );
   }
 }
@@ -136,12 +163,15 @@ const mapStateToProps = (state) => {
     loading: state.auth.loading,
     error: state.auth.error,
     isAuthenticated: state.auth.token !== null,
+    buildingBurger: state.burgerBuilder.building,
+    authRedirectPath: state.auth.authRedirectPath,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     onAuth: (email, password, isSignup) => dispatch(actions.auth(email, password, isSignup)),
+    onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/')),
   };
 };
 
