@@ -16,7 +16,7 @@ export const removeIngredient = (ingName) => {
 };
 
 export const setIngredients = (ingredients) => {
-  console.log('Set Ingredients' + ingredients);
+  // console.log('Set Ingredients' + ingredients);
   return {
     type: actionTypes.SET_INGREDIENTS,
     ingredients: ingredients,
@@ -31,7 +31,7 @@ export const fetchIngredientsFailed = () => {
 };
 
 export const initIngredients = () => {
-  console.log('initIngredients');
+  // console.log('initIngredients');
   return (dispatch) => {
     axios
       .get('/ingredients.json')
@@ -40,7 +40,7 @@ export const initIngredients = () => {
         dispatch(setIngredients(response.data));
       })
       .catch((error) => {
-        console.log('[burgerBuilder.js (action creator)] catch -> ' + error);
+        // console.log('[burgerBuilder.js (action creator)] catch -> ' + error);
         dispatch(fetchIngredientsFailed);
       });
   };

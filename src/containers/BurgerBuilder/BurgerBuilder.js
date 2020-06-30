@@ -32,20 +32,20 @@ class BurgerBuilder extends Component {
     this.props.onInitIngredients();
   }
 
-  componentWillMount() {
-    // axios
-    //   .get('/ingredients.json')
-    //   .then((response) => {
-    //     this.setState({
-    //       ingredients: response.data,
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     this.setState({ error: true });
-    //   });
-    // console.log('ComponentWillMount');
-    // this.props.onInitIngredients();
-  }
+  // componentWillMount() {
+  //   axios
+  //     .get('/ingredients.json')
+  //     .then((response) => {
+  //       this.setState({
+  //         ingredients: response.data,
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       this.setState({ error: true });
+  //     });
+  //   console.log('ComponentWillMount');
+  //   this.props.onInitIngredients();
+  // }
   // this was modified, while adding redux to the project
   updatePurchaseState() {
     const ingredients = this.props.ings;
